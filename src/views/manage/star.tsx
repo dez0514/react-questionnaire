@@ -9,7 +9,7 @@ const dataSource = [
     key: '1',
     id: 'q1',
     title: '问卷q1',
-    isPub: true,
+    isPublished: true,
     isStar: true,
     answerCount: 3,
     createdAt: '2023-06-14 14:00:00'
@@ -18,7 +18,7 @@ const dataSource = [
     key: '2',
     id: 'q2',
     title: '问卷q2',
-    isPub: false,
+    isPublished: false,
     isStar: false,
     answerCount: 5,
     createdAt: '2023-06-14 15:00:00'

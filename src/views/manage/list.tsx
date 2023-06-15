@@ -5,12 +5,13 @@ import { useTitle } from 'ahooks'
 import { ListWrap } from './components/styled'
 import { ItemType } from '@/types'
 import { debounce } from '@/utils';
+import { getQuestionList } from '@/api/question'
 const dataSource = [
   {
     key: '1',
     id: 'q1',
     title: '问卷q1',
-    isPub: true,
+    isPublished: true,
     isStar: true,
     answerCount: 3,
     createdAt: '2023-06-14 14:00:00'
@@ -19,7 +20,7 @@ const dataSource = [
     key: '2',
     id: 'q2',
     title: '问卷q2',
-    isPub: false,
+    isPublished: false,
     isStar: false,
     answerCount: 5,
     createdAt: '2023-06-14 15:00:00'
@@ -28,7 +29,7 @@ const dataSource = [
     key: '3',
     id: 'q3',
     title: '问卷q1',
-    isPub: true,
+    isPublished: true,
     isStar: true,
     answerCount: 3,
     createdAt: '2023-06-14 14:00:00'
@@ -37,7 +38,7 @@ const dataSource = [
     key: '4',
     id: 'q4',
     title: '问卷q2',
-    isPub: false,
+    isPublished: false,
     isStar: false,
     answerCount: 5,
     createdAt: '2023-06-14 15:00:00'
@@ -46,7 +47,7 @@ const dataSource = [
     key: '5',
     id: 'q5',
     title: '问卷q1',
-    isPub: true,
+    isPublished: true,
     isStar: true,
     answerCount: 3,
     createdAt: '2023-06-14 14:00:00'
@@ -55,7 +56,7 @@ const dataSource = [
     key: '6',
     id: 'q6',
     title: '问卷q2',
-    isPub: false,
+    isPublished: false,
     isStar: false,
     answerCount: 5,
     createdAt: '2023-06-14 15:00:00'
@@ -74,23 +75,64 @@ function List() {
   useTitle('ddm问卷-问卷列表')
   const pageSize = 6
   const [list, setList] = useState<ItemType[]>([])
+  const [pageNumber, setPageNumber] = useState<number>(1)
+  const [total, setTotal] = useState<number>(0)
   const [loadState, setLoadState] = useState<LoadType>(0)
   const scrollRef = useRef<HTMLDivElement>(null)
-  const onSearch = (value: string) => console.log(value)
+  const onSearch = (value: string) => {
+    console.log(value)
+    setPageNumber(1)
+  }
+  const getList = () => {
+    setLoadState(1)
+    const params = {
+      pageSize,
+      pageNumber
+    }
+    getQuestionList(params).then((res: any) => {
+      console.log('res===', res)
+      if(res.code === 0) {
+        if(res.data.list.length === 0) {
+          if(pageNumber === 1) {
+            // 无数据
+            setList([])
+          } else {
+            setLoadState(2)
+          }
+        } else {
+          setTotal(res.data.total || 0)
+          if(pageNumber === 1) {
+            setList(res.data.list)
+          } else {
+            const temp = list.concat(res.data.list)
+            setList(temp)
+          }
+          setLoadState(0)
+        }
+      } else {
+        setLoadState(0)
+      }
+      console.log('list====', list)
+    })
+  }
   useEffect(() => {
     console.log('scrollRef==', scrollRef)
-    setList(dataSource)
+    getList()
     const handleScroll = (e: any) => {
       // todo 
       console.log('e==', e)
       const { scrollHeight, scrollTop, clientHeight } = e.srcElement;
       console.log('e1==', scrollHeight, scrollTop, clientHeight)
+      console.log('loadState==', loadState)
+      if(loadState === 1) return;
+      console.log('list.length >= total======', list.length >= total)
+      if(list.length >= total) {
+        return
+      }
+      console.log('scrollHeight - scrollTop = clientHeight======', scrollHeight - scrollTop === clientHeight)
       if(scrollHeight - scrollTop === clientHeight) {
         console.log("触底啦！");
-        setLoadState(1)
-      } else {
-        console.log("no");
-        setLoadState(0)
+        setPageNumber(pageNumber + 1)
       }
     }
     const scrollCallback = debounce(handleScroll, 300)
@@ -99,6 +141,10 @@ function List() {
       scrollRef.current?.parentNode?.removeEventListener("scroll", scrollCallback);
     };
   }, [])
+  useEffect(() => {
+    console.log('page===', pageNumber)
+    getList()
+  }, [pageNumber])
   return (
     <ListWrap ref={scrollRef}>
       <div className='top-search'>

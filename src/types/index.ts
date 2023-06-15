@@ -22,7 +22,7 @@ export interface ItemType {
   key: string
   id: string
   title: string
-  isPub: boolean
+  isPublished: boolean
   isStar: boolean
   answerCount: number
   createdAt: string

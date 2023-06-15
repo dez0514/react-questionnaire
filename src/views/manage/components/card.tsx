@@ -37,7 +37,7 @@ const CardBox = styled.div`
   }
 `
 
-function ListCard({ id, title, isPub, isStar, answerCount, createdAt  }: ItemType) {
+function ListCard({ id, title, isPublished, isStar, answerCount, createdAt  }: ItemType) {
   const [modal, contextHolder] = Modal.useModal();
   const handleClickDel = () => {
     modal.confirm({
@@ -70,7 +70,7 @@ function ListCard({ id, title, isPub, isStar, answerCount, createdAt  }: ItemTyp
       </div>
       <div className='right'>
         <div className='flex title'>
-          <Tag color={ isPub ? 'success' : 'default'}>{ isPub ? '已发布' : '未发布'}</Tag>
+          <Tag color={ isPublished ? 'success' : 'default'}>{ isPublished ? '已发布' : '未发布'}</Tag>
           <Divider type="vertical" />
           <div className='txt'>答卷：{ answerCount }</div>
           <Divider type="vertical" />

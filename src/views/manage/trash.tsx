@@ -33,7 +33,7 @@ function Trash() {
       key: '1',
       id: 'q1',
       title: '问卷q1',
-      isPub: true,
+      isPublished: true,
       isStar: true,
       answerCount: 3,
       createdAt: '2023-06-14 14:00:00'
@@ -42,7 +42,7 @@ function Trash() {
       key: '2',
       id: 'q2',
       title: '问卷q2',
-      isPub: false,
+      isPublished: false,
       isStar: false,
       answerCount: 5,
       createdAt: '2023-06-14 15:00:00'
@@ -57,9 +57,9 @@ function Trash() {
     },
     {
       title: '是否发布',
-      dataIndex: 'isPub',
-      key: 'isPub',
-      render: (_: any, { isPub }:{ isPub: boolean }) => <Tag color={ isPub ? 'success' : 'default'}>{ isPub ? '已发布' : '未发布'}</Tag>
+      dataIndex: 'isPublished',
+      key: 'isPublished',
+      render: (_: any, { isPublished }:{ isPublished: boolean }) => <Tag color={ isPublished ? 'success' : 'default'}>{ isPublished ? '已发布' : '未发布'}</Tag>
     },
     {
       title: '答卷',
