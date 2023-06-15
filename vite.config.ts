@@ -10,5 +10,17 @@ export default defineConfig({
     alias:{
       "@":path.resolve(__dirname,'./src')//配置@别名
     }
-  }
+  },
+  server: {
+    // host: '192.168.0.102',
+    // port: 3001,
+    // open: true,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3001',
+        changeOrigin: true,
+        rewrite: path => path.replace(/^\/api/, '/api')
+      }
+    }
+  },
 })

@@ -98,8 +98,9 @@ function compileConfig(config: any) {
   config = { ...defaultRest, ...rest, headers: { ...headers, ...newHeaders }}
   // get,set token...
   const token = sessionStorage.getItem('token')
+  // console.log('get token=====', token)
   if(token) {
-    config.headers.Authorization = token; // 坑：axios-mock-adapter 监听不到更新
+    config.headers.Authorization = token;
   }
   // 处理restful方式的url, 形如 '/article/:id'
 	const data = ['get', 'delete', 'head'].includes(config.method) ? config.params : config.data;
@@ -110,6 +111,7 @@ function compileConfig(config: any) {
 			delete data[item.name];
 		}
 	});
+  return config
 }
 
 function handleError(data: any) {
@@ -140,7 +142,8 @@ service.interceptors.request.use(
   (config: any) => {
     isAbortRequest(config)
     changeLoadingState(config, true)
-    compileConfig(config)
+    config = compileConfig(config)
+    // console.log('request config====', config)
     return config
   },
   error => {
@@ -150,7 +153,7 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   (response: any) => {
     // 成功请求到数据
-    console.log('response==', response)
+    // console.log('response==', response)
     changeLoadingState(response.config, false)
     removeSourcesRequest(response.config);
     if(!response.config.hideError) {

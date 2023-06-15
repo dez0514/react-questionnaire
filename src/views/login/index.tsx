@@ -1,6 +1,9 @@
 import { Button, Checkbox, Form, Input } from 'antd';
 import styled from 'styled-components'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { loginPost, getUserInfo } from '@/api/user';
+import { updateUserinfo } from '@/actions';
+import { useDispatch } from 'react-redux';
 
 const FlexBox = styled.div`
   display: flex;
@@ -9,15 +12,30 @@ const FlexBox = styled.div`
   align-items: center;
   height: 100%;
 `
-
-const onFinish = (values: any) => {
-  console.log('Success:', values);
-};
-
-const onFinishFailed = (errorInfo: any) => {
-  console.log('Failed:', errorInfo);
-};
 function Login() {
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const onFinish = (values: any) => {
+    console.log('Success:', values);
+    const { username, password } = values
+    loginPost({ username, password }).then(res => {
+      // console.log('login===', res)
+      const token = res.data
+      sessionStorage.setItem('token', token)
+      getUserInfo().then((result: any) => {
+        // console.log('info===', result)
+        if(result.code === 0) {
+          const userinfo = JSON.stringify(result.data)
+          sessionStorage.setItem('userinfo', userinfo)
+          dispatch(updateUserinfo({...result.data}))
+          navigate('/manage')
+        }
+      })
+    })
+  };
+  const onFinishFailed = (errorInfo: any) => {
+    console.log('Failed:', errorInfo);
+  };
   return (
     <FlexBox>
       <h2 style={{ marginBottom: '40px' }}>用户登录</h2>
@@ -26,7 +44,7 @@ function Login() {
         labelCol={{ span: 5 }}
         wrapperCol={{ span: 16 }}
         style={{ width: 600 }}
-        initialValues={{ remember: true }}
+        initialValues={{ remember: false }}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         autoComplete="off"

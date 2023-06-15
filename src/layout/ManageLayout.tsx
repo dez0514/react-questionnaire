@@ -1,8 +1,11 @@
+import { useEffect } from "react"
 import { Outlet, useLocation, useNavigate } from "react-router-dom"
 import { Layout } from 'antd';
 import styled from 'styled-components'
 import { manageRoutes } from '@/router/router'
 import { PlusOutlined } from '@ant-design/icons'
+import { useSelector } from "react-redux"
+import { GlobalConfigState } from '@/types/reducer'
 const { Sider, Content } = Layout
 const BtnBox = styled.div`
   box-sizing: border-box;
@@ -37,6 +40,14 @@ function ManageLayout() {
   const location = useLocation()
   const navigate = useNavigate()
   // console.log('location===', location)
+  const { userinfo } = useSelector((store: GlobalConfigState) => store.userReducer )
+  useEffect(() => {
+    console.log('userinfo===', userinfo)
+    if(!userinfo?.username) {
+      sessionStorage.clear()
+      navigate('/login')
+    }
+  }, [userinfo])
   return (
     <Layout hasSider={true}>
       <Sider width={170} style={{ background: 'transparent', height: 'calc(100vh - 64px - 64px)' }}>
