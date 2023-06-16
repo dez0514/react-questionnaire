@@ -8,10 +8,14 @@ export type configState = {
 export type userState = {
   userinfo?: UserType
 }
+export interface componentState {
+  componentList: any
+}
 
 export type GlobalConfigState = {
   globalConfig: configState
   userReducer: userState
+  componentReducer: componentState
 }
 
 export type configAction = {
@@ -24,4 +28,7 @@ export type userAction = {
   payload: userState
 }
 
-export type ConfigReducerType = React.Reducer<configState, configAction>
+export type componentAction = {
+  type: string
+  payload: componentState
+}
