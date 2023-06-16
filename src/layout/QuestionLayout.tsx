@@ -1,7 +1,8 @@
+import { Outlet } from "react-router-dom"
 function QuestionLayout() {
   return (
     <>
-      <h1>QuestionLayout</h1>
+      <Outlet />
     </>
   )
 }

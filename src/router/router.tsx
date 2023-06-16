@@ -11,6 +11,8 @@ import AllList from '@/views/manage/list'
 import StarList from '@/views/manage/star'
 import DeleteList from '@/views/manage/trash'
 import QuestionLayout from '@/layout/QuestionLayout'
+import Edit from '@/views/question/edit'
+import Stat from '@/views/question/stat'
 
 export const manageRoutes: RouterType[] = [
   {
@@ -70,8 +72,21 @@ export const mainRoutes: RouterType[] = [
   },
   {
     path: '/question',
-    label: '问卷管理',
-    element: <QuestionLayout />
+    label: '问卷详情',
+    element: <QuestionLayout />,
+    children: [
+      { path: '', element: <Navigate to="/404" /> },
+      {
+        path: 'edit/:id',
+        label: '问卷编辑',
+        element: <Edit />,
+      },
+      {
+        path: 'detail/:id',
+        label: '问卷统计',
+        element: <Stat />,
+      },
+    ]
   },
   {
     path: '/404',

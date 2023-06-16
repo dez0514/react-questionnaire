@@ -2,6 +2,7 @@ import styled from 'styled-components'
 import { Button, Space, Tag, Divider, Modal, message } from 'antd'
 import { EditOutlined, StarOutlined, LineChartOutlined, DeleteOutlined, CopyOutlined } from '@ant-design/icons'
 import { ItemType } from '@/types'
+import { useNavigate } from 'react-router-dom';
 const CardBox = styled.div`
   padding: 20px 10px 10px;
   margin-bottom: 20px;
@@ -37,7 +38,8 @@ const CardBox = styled.div`
   }
 `
 
-function ListCard({ id, title, isPublished, isStar, answerCount, createdAt  }: ItemType) {
+function ListCard({ _id, title, isPublished, isStar, answerCount, createdAt  }: ItemType) {
+  const navigate = useNavigate()
   const [modal, contextHolder] = Modal.useModal();
   const handleClickDel = () => {
     modal.confirm({
@@ -46,7 +48,7 @@ function ListCard({ id, title, isPublished, isStar, answerCount, createdAt  }: I
       cancelText: '取消',
       okText: '确定',
       onOk: () => {
-        console.log('id===', id)
+        console.log('id===', _id)
         message.success('已删除')
       }
     })
@@ -63,7 +65,7 @@ function ListCard({ id, title, isPublished, isStar, answerCount, createdAt  }: I
         </div>
         <div className='btns'>
           <Space>
-            <Button type="text" icon={<EditOutlined />}>编辑问卷</Button>
+            <Button type="text" icon={<EditOutlined />} onClick={ () => navigate(`/question/edit/${_id}`) }>编辑问卷</Button>
             <Button type="text" icon={<LineChartOutlined />}>问卷统计</Button>
           </Space>
         </div>

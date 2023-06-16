@@ -6,6 +6,7 @@ import { manageRoutes } from '@/router/router'
 import { PlusOutlined } from '@ant-design/icons'
 import { useSelector } from "react-redux"
 import { GlobalConfigState } from '@/types/reducer'
+import { createQuestion } from '@/api/question'
 const { Sider, Content } = Layout
 const BtnBox = styled.div`
   box-sizing: border-box;
@@ -41,6 +42,13 @@ function ManageLayout() {
   const navigate = useNavigate()
   // console.log('location===', location)
   const { userinfo } = useSelector((store: GlobalConfigState) => store.userReducer )
+  const handleCreate = () => {
+    createQuestion().then((res: any) => {
+      if(res.code === 0) {
+        navigate(`/question/edit/${res.data}`)
+      }
+    })
+  }
   useEffect(() => {
     console.log('userinfo===', userinfo)
     if(!userinfo?.username) {
@@ -51,7 +59,7 @@ function ManageLayout() {
   return (
     <Layout hasSider={true}>
       <Sider width={170} style={{ background: 'transparent', height: 'calc(100vh - 64px - 64px)' }}>
-        <BtnBox style={{ marginTop: '30px', backgroundColor: '#1890ff', color: '#fff' }}>
+        <BtnBox style={{ marginTop: '30px', backgroundColor: '#1890ff', color: '#fff' }} onClick={handleCreate}>
           <div className="icon"><PlusOutlined /></div>
           <div>新建问卷</div>
         </BtnBox>

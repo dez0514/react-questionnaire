@@ -1,12 +1,33 @@
-import { useState, Key } from 'react'
+import { useState, Key, useEffect } from 'react'
 import { Input, Table, Pagination, Space, Button, Tag, message, Empty, Modal } from 'antd';
 import { useTitle } from 'ahooks';
 import { ListWrap } from './components/styled'
+import { ItemType } from '@/types'
+import { getQuestionList } from '@/api/question'
 
 function Trash() {
   useTitle('ddm问卷-回收站')
+  const pageSize = 9
+  const [list, setList] = useState<ItemType[]>([])
+  const [pageNumber, setPageNumber] = useState<number>(1)
+  const [total, setTotal] = useState<number>(0)
   const [modal, contextHolder] = Modal.useModal();
   const [selectedRowIds, setSelectedRowIds] = useState<Key[]>([]);
+  const getList = (pageNumber = 1) => {
+    const params = {
+      pageSize,
+      pageNumber,
+      isDeleted: true
+    }
+    getQuestionList(params).then((res: any) => {
+      console.log('res===', res)
+      if(res.code === 0) {
+        setTotal(res.data.total || 0)
+        setList(res.data.list || [])
+        setPageNumber(pageNumber)
+      }
+    })
+  }
   const onSelectChange = (newSelectedRowIds: Key[]) => {
     console.log('selectedRowIds changed: ', newSelectedRowIds);
     setSelectedRowIds(newSelectedRowIds);
@@ -15,7 +36,10 @@ function Trash() {
     selectedRowKeys: selectedRowIds,
     onChange: onSelectChange,
   };
-  const onSearch = (value: string) => console.log(value);
+  const onSearch = (value: string) => {
+    console.log(value)
+    getList()
+  }
   const handleClickDel = () => {
     modal.confirm({
       title: '提示',
@@ -27,27 +51,9 @@ function Trash() {
       }
     })
   };
-  
-  const dataSource = [
-    {
-      key: '1',
-      id: 'q1',
-      title: '问卷q1',
-      isPublished: true,
-      isStar: true,
-      answerCount: 3,
-      createdAt: '2023-06-14 14:00:00'
-    },
-    {
-      key: '2',
-      id: 'q2',
-      title: '问卷q2',
-      isPublished: false,
-      isStar: false,
-      answerCount: 5,
-      createdAt: '2023-06-14 15:00:00'
-    }
-  ];
+  useEffect(() => {
+    getList()
+  }, [])
   
   const columns = [
     {
@@ -79,19 +85,19 @@ function Trash() {
         <h2>回收站</h2>
         <Input.Search placeholder="输入标题搜索" onSearch={onSearch} style={{ width: 260 }} />
       </div>
-      { dataSource.length > 0 && <div style={{marginBottom: '20px', padding: '10px', background: '#fff' }}>
+      { list.length > 0 && <div style={{marginBottom: '20px', padding: '10px', background: '#fff' }}>
         <Space>
           <Button type='primary' disabled={selectedRowIds.length === 0}>恢复</Button>
           <Button danger disabled={selectedRowIds.length === 0} onClick={handleClickDel}>彻底删除</Button>
         </Space>
       </div>}
-      { dataSource.length === 0 && <Empty /> }
-      <Table rowKey="id" rowSelection={rowSelection} dataSource={dataSource} columns={columns} pagination={false} />
-      <div style={{ paddingBottom: '20px' }}>
+      { list.length === 0 && <Empty style={{ position: 'fixed', left: '50%', top: '50%', transform: 'translate(-50%, -50%)' }} /> }
+      { list.length > 0 && <Table rowKey="_id" rowSelection={rowSelection} dataSource={list} columns={columns} pagination={false} /> }
+      { list.length > 0 && <div style={{ paddingBottom: '20px' }}>
         <div style={{ textAlign: 'right', padding: '10px', background: '#fff', marginTop: '20px' }}>
-          <Pagination defaultCurrent={1} total={50} />
+          <Pagination current={pageNumber} total={total} pageSize={pageSize} onChange={(pageNumber) => getList(pageNumber)} />
         </div>
-      </div>
+      </div> }
     </ListWrap>
   )
 }

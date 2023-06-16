@@ -6,62 +6,7 @@ import { ListWrap } from './components/styled'
 import { ItemType } from '@/types'
 import { debounce } from '@/utils';
 import { getQuestionList } from '@/api/question'
-const dataSource = [
-  {
-    key: '1',
-    id: 'q1',
-    title: '问卷q1',
-    isPublished: true,
-    isStar: true,
-    answerCount: 3,
-    createdAt: '2023-06-14 14:00:00'
-  },
-  {
-    key: '2',
-    id: 'q2',
-    title: '问卷q2',
-    isPublished: false,
-    isStar: false,
-    answerCount: 5,
-    createdAt: '2023-06-14 15:00:00'
-  },
-  {
-    key: '3',
-    id: 'q3',
-    title: '问卷q1',
-    isPublished: true,
-    isStar: true,
-    answerCount: 3,
-    createdAt: '2023-06-14 14:00:00'
-  },
-  {
-    key: '4',
-    id: 'q4',
-    title: '问卷q2',
-    isPublished: false,
-    isStar: false,
-    answerCount: 5,
-    createdAt: '2023-06-14 15:00:00'
-  },
-  {
-    key: '5',
-    id: 'q5',
-    title: '问卷q1',
-    isPublished: true,
-    isStar: true,
-    answerCount: 3,
-    createdAt: '2023-06-14 14:00:00'
-  },
-  {
-    key: '6',
-    id: 'q6',
-    title: '问卷q2',
-    isPublished: false,
-    isStar: false,
-    answerCount: 5,
-    createdAt: '2023-06-14 15:00:00'
-  }
-];
+
 type LoadType = 0 | 1 | 2
 function LoadMore({ state = 0 } : { state: LoadType }) {
   return (
@@ -76,21 +21,26 @@ function List() {
   const pageSize = 6
   const [list, setList] = useState<ItemType[]>([])
   const [pageNumber, setPageNumber] = useState<number>(1)
-  const [total, setTotal] = useState<number>(0)
+  // const [total, setTotal] = useState<number>(0)
+  const [initLoad, setInitLoad] = useState<boolean>(false) // 开始没数据时第一次的loading
   const [loadState, setLoadState] = useState<LoadType>(0)
   const scrollRef = useRef<HTMLDivElement>(null)
   const onSearch = (value: string) => {
     console.log(value)
-    setPageNumber(1)
+    getList()
   }
-  const getList = () => {
+  const getList = (pageNumber = 1) => {
     setLoadState(1)
     const params = {
       pageSize,
       pageNumber
     }
-    getQuestionList(params).then((res: any) => {
+    if(list.length === 0 && pageNumber === 1) {
+      setInitLoad(true)
+    }
+    getQuestionList(params, { loading: false }).then((res: any) => {
       console.log('res===', res)
+      setInitLoad(false)
       if(res.code === 0) {
         if(res.data.list.length === 0) {
           if(pageNumber === 1) {
@@ -100,58 +50,51 @@ function List() {
             setLoadState(2)
           }
         } else {
-          setTotal(res.data.total || 0)
+          console.log(res)
           if(pageNumber === 1) {
             setList(res.data.list)
           } else {
             const temp = list.concat(res.data.list)
             setList(temp)
           }
+          setPageNumber(pageNumber)
           setLoadState(0)
         }
       } else {
         setLoadState(0)
       }
-      console.log('list====', list)
     })
   }
-  useEffect(() => {
-    console.log('scrollRef==', scrollRef)
-    getList()
-    const handleScroll = (e: any) => {
-      // todo 
-      console.log('e==', e)
-      const { scrollHeight, scrollTop, clientHeight } = e.srcElement;
-      console.log('e1==', scrollHeight, scrollTop, clientHeight)
-      console.log('loadState==', loadState)
-      if(loadState === 1) return;
-      console.log('list.length >= total======', list.length >= total)
-      if(list.length >= total) {
-        return
-      }
-      console.log('scrollHeight - scrollTop = clientHeight======', scrollHeight - scrollTop === clientHeight)
-      if(scrollHeight - scrollTop === clientHeight) {
-        console.log("触底啦！");
-        setPageNumber(pageNumber + 1)
-      }
+  const handleScroll = (e: any) => {
+    const { scrollHeight, scrollTop, clientHeight } = e.srcElement;
+    if(loadState !== 0) return; // 加载中 和 没有更多 都不走了。
+    if(scrollHeight - scrollTop === clientHeight) {
+      console.log("触底啦！");
+      getList(pageNumber + 1)
     }
-    const scrollCallback = debounce(handleScroll, 300)
-    scrollRef.current?.parentNode?.addEventListener("scroll", scrollCallback);
-    return () => {
-      scrollRef.current?.parentNode?.removeEventListener("scroll", scrollCallback);
-    };
-  }, [])
+  }
+  const scrollCallback = debounce(handleScroll, 300)
   useEffect(() => {
-    console.log('page===', pageNumber)
+    const parentNode = scrollRef.current?.parentNode;
+    if (parentNode) {
+      parentNode.addEventListener("scroll", scrollCallback);
+      return () => {
+        // debugger
+        parentNode.removeEventListener("scroll", scrollCallback);
+      };
+    }
+  }, [scrollRef, scrollCallback])
+  useEffect(() => {
     getList()
-  }, [pageNumber])
+  }, [])
   return (
     <ListWrap ref={scrollRef}>
       <div className='top-search'>
         <h2>我的问卷</h2>
         <Input.Search placeholder="输入标题搜索" onSearch={onSearch} style={{ width: 260 }} />
       </div>
-      { list.length === 0 && <Empty /> }
+      { list.length === 0 && !initLoad && <Empty  style={{ position: 'fixed', left: '50%', top: '50%', transform: 'translate(-50%, -50%)' }} /> }
+      { list.length === 0 && initLoad && <Spin  style={{ position: 'fixed', left: '50%', top: '50%', transform: 'translate(-50%, -50%)' }} /> }
       <div className='lists'>
         {
           list.map((item: ItemType) => {

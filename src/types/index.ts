@@ -20,10 +20,11 @@ export type RouterType = {
 
 export interface ItemType {
   key: string
-  id: string
+  _id: string
   title: string
   isPublished: boolean
   isStar: boolean
   answerCount: number
   createdAt: string
+  isDeleted: boolean
 }
