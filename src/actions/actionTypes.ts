@@ -3,3 +3,5 @@ export const UPDATE_USERINFO = 'UPDATE_USERINFO'
 export const RESET_USERINFO = 'RESET_USERINFO'
 
 export const ADD_COMPONENT = 'ADD_COMPONENT'
+export const SET_SELECT_ID = 'SET_SELECT_ID'
+

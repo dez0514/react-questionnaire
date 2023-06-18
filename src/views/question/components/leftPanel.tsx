@@ -1,7 +1,36 @@
-// import { useState } from 'react'
+import { useCallback } from 'react'
 import styles from '../edit.module.scss'
-import { Tabs } from 'antd';
+import { Tabs, Typography } from 'antd';
 import { BarsOutlined, AppstoreOutlined } from '@ant-design/icons'
+import { componentConfGroup, ComponentConfType } from '@/components/QuestionComponents'
+import { addComponent } from '@/actions'
+import { useDispatch } from 'react-redux';
+import { nanoid } from 'nanoid'
+const { Title } = Typography
+
+function genComponent(c: ComponentConfType) {
+  const { title, type, Component, defaultProps } = c
+  const dispatch = useDispatch()
+
+  const handleClick = useCallback(() => {
+    dispatch(
+      addComponent({
+        fe_id: nanoid(), // 前端生成的 id
+        title,
+        type,
+        props: defaultProps,
+      })
+    )
+  }, [])
+
+  return (
+    <div key={type} className={styles.component_wrapper} onClick={handleClick}>
+      <div className={styles.component}>
+        <Component />
+      </div>
+    </div>
+  )
+}
 
 function LeftPanel() {
   const onChange = (key: string) => {
@@ -10,9 +39,19 @@ function LeftPanel() {
   const ItemComps = () => {
     return (
       <div>
-        { new Array(10).fill(0).map((item, index) => {
-          return <div key={index}>{item}_1111</div>
-        }) }
+        {
+          componentConfGroup.map(((group: any, index: number) => {
+            const { groupId, groupName, components } = group
+            return (
+              <div key={groupId}>
+                <Title level={3} style={{ fontSize: '16px', marginTop: index > 0 ? '20px' : '0' }}>
+                  {groupName}
+                </Title>
+                <div>{components.map((c: ComponentConfType) => genComponent(c))}</div>
+              </div>
+            )
+          }))
+        }
       </div>
     )
   }

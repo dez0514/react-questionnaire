@@ -1,3 +1,4 @@
+import { ComponentConfType } from '@/components/QuestionComponents'
 interface UserType {
   username?: string
   avatar?: string
@@ -8,8 +9,9 @@ export type configState = {
 export type userState = {
   userinfo?: UserType
 }
-export interface componentState {
-  componentList: any
+export type componentState = {
+  selectId?: string
+  componentList?: ComponentConfType[]
 }
 
 export type GlobalConfigState = {
