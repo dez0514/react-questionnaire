@@ -1,4 +1,4 @@
-import { componentState, componentAction, ComponentInfoType, MoveCompsType } from '@/types/reducer'
+import { componentState, componentAction, ComponentInfoType } from '@/types/reducer'
 import { ADD_COMPONENT, SET_SELECT_ID, MOVE_COMPONENT } from '@/actions/actionTypes'
 import { produce } from 'immer'
 import { arrayMove } from '@dnd-kit/sortable'
