@@ -1,6 +1,6 @@
 // import { useState } from 'react'
 import styles from '../edit.module.scss'
-import { Tabs } from 'antd';
+import { Tabs, Alert } from 'antd';
 import { FileTextOutlined, SettingOutlined } from '@ant-design/icons'
 
 function RightPanel() {
@@ -10,9 +10,7 @@ function RightPanel() {
   const ItemProps = () => {
     return (
       <div>
-        { new Array(10).fill(0).map((item, index) => {
-          return <div key={index}>{item}_1111</div>
-        }) }
+        <Alert message="未选中组件" type="warning" showIcon />
       </div>
     )
   }
@@ -26,7 +24,7 @@ function RightPanel() {
   const items = [
     {
       key: '1',
-      label: (<><FileTextOutlined />属性</>),
+      label: (<><FileTextOutlined />组件属性</>),
       children: <ItemProps />
     },
     {

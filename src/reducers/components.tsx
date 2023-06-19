@@ -1,6 +1,7 @@
-import { componentState, componentAction } from '@/types/reducer'
-import { ADD_COMPONENT, SET_SELECT_ID } from '@/actions/actionTypes'
-import { ComponentConfType } from '@/components/QuestionComponents'
+import { componentState, componentAction, ComponentInfoType, MoveCompsType } from '@/types/reducer'
+import { ADD_COMPONENT, SET_SELECT_ID, MOVE_COMPONENT } from '@/actions/actionTypes'
+import { produce } from 'immer'
+import { arrayMove } from '@dnd-kit/sortable'
 
 export const initialComponentState: componentState = {
   selectId: '',
@@ -13,20 +14,30 @@ export const componentReducer = (
 ) => {
   switch (type) {
     case ADD_COMPONENT:
-      // const { selectId, componentList } = state
-      // const index = componentList?.findIndex((c: any) => c.fe_id === selectId)
-      // if (index < 0) {
-      //   // 未选中任何组件
-      //   draft.componentList.push(newComponent)
-      // } else {
-      //   // 选中了组件，插入到 index 后面
-      //   draft.componentList.splice(index + 1, 0, newComponent)
-      // }
-      // draft.selectedId = newComponent.fe_id
-      return state;
+      const nextState = produce(state, (draftState: componentState) => {
+        const { selectId = '', componentList = [] } = draftState
+        const index = componentList.findIndex((c: ComponentInfoType) => c.fe_id === selectId)
+        if(index < 0) {
+          draftState.componentList = [...componentList, payload]
+        } else {
+          // 当前有选中，就插入到选中的后面
+          draftState.componentList?.splice(index + 1, 0, payload)
+          // 易错： splice 直接改变原数组，不要直接将返回值赋值，splice未删除元素时会返回空数组
+        }
+        draftState.selectId = payload.fe_id
+      })
+      return { ...state, ...nextState }
+    case MOVE_COMPONENT:
+      // 移动组件位置
+      const nState = produce(state, (draftState: componentState) => {
+        const { componentList = [] } = draftState
+          const { oldIndex, newIndex } = payload
+          draftState.componentList = arrayMove(componentList, oldIndex, newIndex)
+        }
+      )
+      return { ...state, ...nState }
     case SET_SELECT_ID:
-      console.log('payload55===', payload)
-      return state;
+      return { ...state, selectId: payload }
     default:
       return state;
   }
