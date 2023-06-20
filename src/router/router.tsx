@@ -13,6 +13,7 @@ import DeleteList from '@/views/manage/trash'
 import QuestionLayout from '@/layout/QuestionLayout'
 import Edit from '@/views/question/edit'
 import Stat from '@/views/question/stat'
+import ReactDndDemo from '@/views/error/reactDndDemo'
 
 export const manageRoutes: RouterType[] = [
   {
@@ -87,6 +88,11 @@ export const mainRoutes: RouterType[] = [
         element: <Stat />,
       },
     ]
+  },
+  {
+    path: '/test',
+    label: 'test',
+    element: <ReactDndDemo />
   },
   {
     path: '/404',

@@ -44,8 +44,13 @@ export type userAction = {
   type: string
   payload: userState
 }
+
+export type UpdatePropsType = {
+  fe_id: string
+  newProps: ComponentPropsType
+}
 // action 需要合并所有的 payload 的 type
 export type componentAction = {
   type: string
-  payload: componentState & ComponentInfoType & MoveCompsType
+  payload: componentState & ComponentInfoType & MoveCompsType & UpdatePropsType
 }

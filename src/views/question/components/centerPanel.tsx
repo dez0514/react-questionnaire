@@ -5,8 +5,8 @@ import { getComponentConfByType } from '@/components/QuestionComponents'
 import { setSelectId, moveComponent } from '@/actions'
 import styles from '../edit.module.scss'
 import classNames from "classnames"
-import SortableContainer from "@/components/DragSortable/SortableContainer"
-import SortableItem from "@/components/DragSortable/SortableItem"
+import SortableContainer from "@/components/DndKitDragSortable/SortableContainer"
+import SortableItem from "@/components/DndKitDragSortable/SortableItem"
 function genComponent(componentInfo: ComponentInfoType) {
   const { type, props } = componentInfo // 每个组件的信息，是从 redux store 获取的（服务端获取）
   const componentConf = getComponentConfByType(type)

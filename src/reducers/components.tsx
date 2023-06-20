@@ -1,5 +1,5 @@
 import { componentState, componentAction, ComponentInfoType } from '@/types/reducer'
-import { ADD_COMPONENT, SET_SELECT_ID, MOVE_COMPONENT } from '@/actions/actionTypes'
+import { ADD_COMPONENT, SET_SELECT_ID, MOVE_COMPONENT, CHANGE_COMPONENT_PROPS } from '@/actions/actionTypes'
 import { produce } from 'immer'
 import { arrayMove } from '@dnd-kit/sortable'
 
@@ -38,6 +38,19 @@ export const componentReducer = (
       return { ...state, ...nState }
     case SET_SELECT_ID:
       return { ...state, selectId: payload }
+    case CHANGE_COMPONENT_PROPS:
+      const ntState = produce(state, (draftState: componentState) => {
+        const { fe_id, newProps } = payload
+        const { componentList = [] } = draftState
+        const curComp = componentList.find(c => c.fe_id === fe_id)
+        if (curComp) {
+          curComp.props = {
+            ...curComp.props,
+            ...newProps,
+          }
+        }
+      })
+      return {...state , ...ntState }
     default:
       return state;
   }
