@@ -1,6 +1,6 @@
 import { Button, Checkbox, Form, Input } from 'antd';
 import styled from 'styled-components'
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { loginPost, getUserInfo } from '@/api/user';
 import { updateUserinfo } from '@/actions';
 import { useDispatch } from 'react-redux';
@@ -13,7 +13,7 @@ const FlexBox = styled.div`
   height: 100%;
 `
 function Login() {
-  const navigate = useNavigate()
+  // const navigate = useNavigate()
   const dispatch = useDispatch()
   const onFinish = (values: any) => {
     console.log('Success:', values);
@@ -28,7 +28,7 @@ function Login() {
           const userinfo = JSON.stringify(result.data)
           sessionStorage.setItem('userinfo', userinfo)
           dispatch(updateUserinfo({...result.data}))
-          navigate('/manage')
+          // navigate('/manage')
         }
       })
     })

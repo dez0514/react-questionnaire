@@ -105,4 +105,5 @@ export const mainRoutes: RouterType[] = [
   }
 ]
 
-
+export const loginOrRegisterPathName = ['/login', '/register']
+export const noNeedLoginPathNameArr = [...loginOrRegisterPathName, '/']

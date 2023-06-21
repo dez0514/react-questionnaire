@@ -7,6 +7,8 @@ import styled from 'styled-components'
 import { useSelector, useDispatch } from "react-redux"
 import { GlobalConfigState } from '@/types/reducer'
 import { resetUserinfo } from "@/actions";
+import useLoadUserData from '../hooks/useLoadUserData'
+import useAuthRedirct from '../hooks/useAuthRedirct'
 const { Header, Footer, Content } = Layout
 const FlexBox = styled.div`
   display: flex;
@@ -27,13 +29,15 @@ const FlexBox = styled.div`
 `
 
 function MainLayout() {
+  const { waitingUserData } = useLoadUserData()
+  useAuthRedirct(waitingUserData)
   const navigate = useNavigate()
   const location = useLocation()
   console.log('location==', location)
   const dispatch = useDispatch()
   const { userinfo } = useSelector((store: GlobalConfigState) => store.userReducer)
   const notShowRight = useMemo(() => {
-    const whitePathArr = ['/', '/login', '/rigister']
+    const whitePathArr = ['/', '/login', '/register']
     return whitePathArr.includes(location.pathname)
   }, [location])
   // console.log('notShowRight==', notShowRight)
@@ -76,7 +80,7 @@ function MainLayout() {
         </FlexBox>
       </Header>
       <Content style={{ height: 'calc(100vh - 64px - 64px)' }}>
-        <Outlet />
+        {!waitingUserData && <Outlet />}
       </Content>
       <Footer style={{ padding: '0 50px', boxSizing: 'border-box', height: '64px', borderTop: '2px solid #33333317' }}>
         <div style={{ textAlign: 'center', lineHeight: '62px' }}>DDM问卷@2023 - present. Created by hanshanshaonian</div>
