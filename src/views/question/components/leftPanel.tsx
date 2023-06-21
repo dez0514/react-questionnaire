@@ -6,6 +6,7 @@ import { componentConfGroup, ComponentConfType } from '@/components/QuestionComp
 import { addComponent } from '@/actions'
 import { useDispatch } from 'react-redux';
 import { nanoid } from 'nanoid'
+import Layers from './layers';
 const { Title } = Typography
 
 function genComponent(c: ComponentConfType) {
@@ -54,13 +55,6 @@ function LeftPanel() {
       </div>
     )
   }
-  const ItemLayers = () => {
-    return (
-      <div>
-        <div>5555</div>
-      </div>
-    )
-  }
   const items = [
     {
       key: '1',
@@ -70,7 +64,7 @@ function LeftPanel() {
     {
       key: '2',
       label: (<><BarsOutlined />图层</>),
-      children: <ItemLayers />
+      children: <Layers />
     }
   ]
   return (

@@ -1,64 +1,38 @@
-import { useMemo } from 'react'
+import { useEffect, useState } from 'react'
 import styles from '../edit.module.scss'
-import { Tabs, Alert } from 'antd';
+import { Tabs } from 'antd';
 import { FileTextOutlined, SettingOutlined } from '@ant-design/icons'
-import { shallowEqual, useDispatch, useSelector } from "react-redux"
-import { GlobalConfigState } from '@/types/reducer'
-import { changeComponentProps } from '@/actions'
-import { getComponentConfByType, ComponentPropsType } from '@/components/QuestionComponents'
-
-const NoProp = () => {
-  return <Alert message="未选中组件" type="warning" showIcon />
-}
-const ItemProps = () => {
-  const dispatch = useDispatch()
-  const { componentList = [], selectId = '' } = useSelector((state: GlobalConfigState) => state.componentReducer, shallowEqual)
-  const selectedComponent = useMemo(() => {
-    return componentList.find(item => item.fe_id && item.fe_id === selectId)
-  }, [componentList, selectId])
-  function changeProps(newProps: ComponentPropsType) {
-    if (!selectedComponent) return
-    const { fe_id } = selectedComponent
-    console.log('fe_id==', fe_id)
-    console.log('newProps==', newProps)
-    dispatch(changeComponentProps({ fe_id, newProps }))
-  }
-  if (!selectId || !selectedComponent) return <NoProp />;
-  const { type, props, isLocked, isHidden } = selectedComponent
-  const componentConf = getComponentConfByType(type)
-  if (componentConf == null) return <NoProp />;
-  const { PropComponent } = componentConf
-  return <PropComponent {...props} onChange={changeProps} disabled={isLocked || isHidden} />
-}
+import PageSetting from './pageSetting';
+import ComponentProp from './componentProp';
+import useGetComponentInfo from '@/hooks/useGetComponentInfo';
 
 function RightPanel() {
-
-
+  const { selectId } = useGetComponentInfo()
+  const [ tabKey, setTabKey ] = useState<string>('')
   const onChange = (key: string) => {
-    console.log(key);
+    setTabKey(key)
   };
-
-  const ItemSetting = () => {
-    return (
-      <div>
-        <div>5555</div>
-      </div>
-    )
-  }
+  useEffect(() => {
+    if(selectId) {
+      setTabKey('1')
+    } else {
+      setTabKey('2')
+    }
+  }, [selectId])
   const items = [
     {
       key: '1',
       label: (<><FileTextOutlined />组件属性</>),
-      children: <ItemProps />
+      children: <ComponentProp />
     },
     {
       key: '2',
       label: (<><SettingOutlined />页面设置</>),
-      children: <ItemSetting />
+      children: <PageSetting />
     }
   ]
   return (
-    <Tabs className={styles.panel_tabs} items={items} defaultActiveKey="1" onChange={onChange} />
+    <Tabs className={styles.panel_tabs} items={items} activeKey={tabKey} onChange={onChange} />
   )
 }
 

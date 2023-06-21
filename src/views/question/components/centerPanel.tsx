@@ -1,10 +1,11 @@
-// import { useState } from 'react'
-import { shallowEqual, useDispatch, useSelector } from "react-redux"
-import { ComponentInfoType, GlobalConfigState } from '@/types/reducer'
+import { useDispatch } from "react-redux"
+import { ComponentInfoType } from '@/types/reducer'
+import useGetComponentInfo from "@/hooks/useGetComponentInfo"
 import { getComponentConfByType } from '@/components/QuestionComponents'
-import { setSelectId, moveComponent } from '@/actions'
+import { setSelectId, moveComponent, deleteComponent } from '@/actions'
 import styles from '../edit.module.scss'
 import classNames from "classnames"
+import { DeleteOutlined } from '@ant-design/icons'
 import SortableContainer from "@/components/DndKitDragSortable/SortableContainer"
 import SortableItem from "@/components/DndKitDragSortable/SortableItem"
 function genComponent(componentInfo: ComponentInfoType) {
@@ -16,7 +17,7 @@ function genComponent(componentInfo: ComponentInfoType) {
 }
 function CenterPanel() {
   const dispatch = useDispatch()
-  const { componentList = [], selectId = '' } = useSelector((state: GlobalConfigState) => state.componentReducer, shallowEqual)
+  const { componentList, selectId } = useGetComponentInfo()
   function handleClick(event: React.MouseEvent, id: string) {
     event.stopPropagation() // 阻止冒泡
     if(selectId === id) {
@@ -24,6 +25,11 @@ function CenterPanel() {
     } else {
       dispatch(setSelectId(id))
     }
+  }
+  function handleDelete(event: React.MouseEvent, id: string) {
+    event.stopPropagation() // 阻止冒泡
+    console.log('delete id===', id)
+    dispatch(deleteComponent(id))
   }
   // 拖拽排序结束
   function handleDragEnd(oldIndex: number, newIndex: number) {
@@ -51,6 +57,11 @@ function CenterPanel() {
               <SortableItem key={fe_id} id={fe_id}>
                 <div className={wrapperClassName} onClick={(e: React.MouseEvent) => handleClick(e, fe_id)}>
                   <div className={styles.component}>{genComponent(c)}</div>
+                  <div className={styles.icon_btn_wrap}>
+                    <div className={classNames([styles.icon_btn, styles.del])} onClick={(e: React.MouseEvent) => handleDelete(e, fe_id)}>
+                      <DeleteOutlined />
+                    </div>
+                  </div>
                 </div>
               </SortableItem>
             )

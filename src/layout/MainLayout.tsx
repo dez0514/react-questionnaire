@@ -7,8 +7,8 @@ import styled from 'styled-components'
 import { useSelector, useDispatch } from "react-redux"
 import { GlobalConfigState } from '@/types/reducer'
 import { resetUserinfo } from "@/actions";
-import useLoadUserData from '../hooks/useLoadUserData'
-import useAuthRedirct from '../hooks/useAuthRedirct'
+import useLoadUserData from '@/hooks/useLoadUserData'
+import useAuthRedirct from '@/hooks/useAuthRedirct'
 const { Header, Footer, Content } = Layout
 const FlexBox = styled.div`
   display: flex;

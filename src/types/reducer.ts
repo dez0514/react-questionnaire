@@ -3,8 +3,15 @@ interface UserType {
   username?: string
   avatar?: string
 }
+export type typePageSetOption = {
+  title: string
+  desc: string
+  js: string
+  css: string
+}
 export type configState = {
   showGlobalLoading?: boolean
+  pageSettingOption?: typePageSetOption
 }
 export type userState = {
   userinfo?: UserType
@@ -49,8 +56,13 @@ export type UpdatePropsType = {
   fe_id: string
   newProps: ComponentPropsType
 }
+
+export type UpdateCompsAttrType = {
+  fe_id: string
+  [key:string]: string | boolean
+}
 // action 需要合并所有的 payload 的 type
 export type componentAction = {
   type: string
-  payload: componentState & ComponentInfoType & MoveCompsType & UpdatePropsType
+  payload: componentState & ComponentInfoType & MoveCompsType & UpdatePropsType & UpdateCompsAttrType & string
 }
