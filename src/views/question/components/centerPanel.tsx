@@ -43,7 +43,7 @@ function CenterPanel() {
     <SortableContainer items={componentListWithId} onDragEnd={handleDragEnd}>
       <div>
         {
-          componentList.map(c => {
+          componentList.filter(c => !c.isHidden).map(c => {
             const { fe_id, isLocked } = c
             const wrapperDefaultClassName = styles.center_component_wrapper
             const selectedClassName = styles.selected

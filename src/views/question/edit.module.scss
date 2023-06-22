@@ -123,6 +123,9 @@
   &.locked {
     opacity: .5;
     cursor: not-allowed;
+    .icon_btn {
+      pointer-events: none;
+    }
   }
 
   .component {

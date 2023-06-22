@@ -1,6 +1,6 @@
 import { FC, useState, ChangeEvent } from 'react'
 import classNames from 'classnames'
-import { message, Input, Button, Space } from 'antd'
+import { message, Input, Button, Space, Alert } from 'antd'
 import { EyeInvisibleOutlined, EyeOutlined, LockOutlined } from '@ant-design/icons'
 import { useDispatch } from 'react-redux'
 import useGetComponentInfo from '@/hooks/useGetComponentInfo'
@@ -60,7 +60,11 @@ const Layers: FC = () => {
   function handleDragEnd(oldIndex: number, newIndex: number) {
     dispatch(moveComponent({ oldIndex, newIndex }))
   }
-
+  if(componentList.length === 0) {
+    return (
+      <Alert message="未选中组件" type="warning" showIcon />
+    )
+  }
   return (
     <SortableContainer items={componentListWithId} onDragEnd={handleDragEnd}>
       {componentList.map(c => {
@@ -84,7 +88,7 @@ const Layers: FC = () => {
                     onBlur={() => setChangingTitleId('')}
                   />
                 )}
-                {fe_id !== changingTitleId && title}
+                {fe_id !== changingTitleId && <div style={{padding: '0 11px'}}>{title}</div>}
               </div>
               <div className={styles.handler}>
                 <Space>
