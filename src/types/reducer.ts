@@ -1,4 +1,5 @@
 import { ComponentPropsType } from '@/components/QuestionComponents'
+import { StateWithHistory } from 'redux-undo'
 interface UserType {
   username?: string
   avatar?: string
@@ -40,7 +41,8 @@ export type componentState = {
 export type GlobalConfigState = {
   globalConfig: configState
   userReducer: userState
-  componentReducer: componentState
+  // componentReducer: componentState
+  componentReducer: StateWithHistory<componentState>
 }
 
 export type configAction = {

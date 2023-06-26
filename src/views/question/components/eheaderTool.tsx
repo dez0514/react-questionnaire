@@ -12,13 +12,14 @@ import {
   RedoOutlined,
 } from '@ant-design/icons'
 import { useDispatch } from 'react-redux'
-// import { ActionCreators as UndoActionCreators } from 'redux-undo'
-import useGetComponentInfo from '@/hooks/useGetComponentInfo'
+import { ActionCreators as UndoActionCreators } from 'redux-undo'
+import useGetComponentInfo, { useComponentActionHistory } from '@/hooks/useGetComponentInfo'
 import { moveComponent, deleteComponent, changeComponentHidden, changeComponentLock, copySelectedComponent, pasteCopiedComponent } from '@/actions'
 
 const EHeaderTool: FC = () => {
   const dispatch = useDispatch()
   const { selectId, componentList, selectedComponent, copiedComponent } = useGetComponentInfo()
+  const { past, future } = useComponentActionHistory()
   const { isLocked } = selectedComponent || {}
   const length = componentList.length
   const selectedIndex = componentList.findIndex(c => c.fe_id === selectId)
@@ -64,12 +65,12 @@ const EHeaderTool: FC = () => {
 
   // 撤销
   function undo() {
-    // dispatch(UndoActionCreators.undo())
+    dispatch(UndoActionCreators.undo())
   }
 
   // 重做
   function redo() {
-    // dispatch(UndoActionCreators.redo())
+    dispatch(UndoActionCreators.redo())
   }
 
   return (
@@ -112,10 +113,10 @@ const EHeaderTool: FC = () => {
         ></Button>
       </Tooltip>
       <Tooltip title="撤销">
-        <Button shape="circle" icon={<UndoOutlined />} onClick={undo}></Button>
+        <Button shape="circle" icon={<UndoOutlined />} onClick={undo} disabled={past.length === 0}></Button>
       </Tooltip>
       <Tooltip title="重做">
-        <Button shape="circle" icon={<RedoOutlined />} onClick={redo}></Button>
+        <Button shape="circle" icon={<RedoOutlined />} onClick={redo} disabled={future.length === 0}></Button>
       </Tooltip>
     </Space>
   )

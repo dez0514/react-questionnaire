@@ -4,6 +4,7 @@ import { useRequest } from 'ahooks'
 import { useDispatch } from 'react-redux'
 import { getQuestionService } from '@/api/question'
 import { updateConfig, initComponent } from '@/actions'
+import { ActionCreators as UndoActionCreators } from 'redux-undo'
 
 function useLoadQuestionData() {
   const { id = '' } = useParams()
@@ -32,6 +33,8 @@ function useLoadQuestionData() {
     dispatch(initComponent({ componentList, selectId, copiedComponent: null }))
     // 把 pageInfo 存储到 redux store
     dispatch(updateConfig({ pageSettingOption: { title, desc, js, css } }))
+    dispatch(UndoActionCreators.clearHistory()) // 初始化时 先清掉 action 历史，防止过度撤销
+    
   }, [data])
 
   // 判断 id 变化，执行 ajax 加载问卷数据

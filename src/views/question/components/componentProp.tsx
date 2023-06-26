@@ -1,16 +1,17 @@
 import { useMemo } from 'react'
 import { Alert } from 'antd';
-import { shallowEqual, useDispatch, useSelector } from "react-redux"
-import { GlobalConfigState } from '@/types/reducer'
+import { useDispatch } from "react-redux"
 import { changeComponentProps } from '@/actions'
 import { getComponentConfByType, ComponentPropsType } from '@/components/QuestionComponents'
+import useGetComponentInfo from '@/hooks/useGetComponentInfo'
 
 const NoProp = () => {
   return <Alert message="未选中组件" type="warning" showIcon />
 }
 const ComponentProp = () => {
   const dispatch = useDispatch()
-  const { componentList = [], selectId = '' } = useSelector((state: GlobalConfigState) => state.componentReducer, shallowEqual)
+
+  const { componentList = [], selectId = '' } = useGetComponentInfo()
   const selectedComponent = useMemo(() => {
     return componentList.find(item => item.fe_id && item.fe_id === selectId)
   }, [componentList, selectId])
