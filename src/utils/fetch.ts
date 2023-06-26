@@ -64,15 +64,18 @@ function isAbortRequest(config: any) {
 		sources.push({ config, cancel });
 	});
 }
+
 // loading
 function changeLoadingState(config: any, toState: boolean) {
-  const request = config.url + config.method;
   if(config.loading || (!('loading' in config) && defaultConfig.loading)) {
+    const request = config.url + '_' + config.method;
     if(toState) {
       loadingRequestList.push(request);
       store.dispatch(updateConfig({ showGlobalLoading: toState }))
     } else {
       // 隐藏 loading 时，考虑其他的请求是否完成，都完成时再隐藏
+      // console.log('loadingRequestList===', loadingRequestList)
+      // console.log('request===', request)
       const findex = loadingRequestList.findIndex((item: string) => item === request)
       if(findex > -1) {
         loadingRequestList.splice(findex, 1)
@@ -141,8 +144,9 @@ const service = axios.create({
 service.interceptors.request.use(
   (config: any) => {
     isAbortRequest(config)
-    changeLoadingState(config, true)
     config = compileConfig(config)
+    // 先处理config, 再loading， 防止 url 中存在变量时（例如 /:id）， loadingRequestList 匹配问题
+    changeLoadingState(config, true)
     // console.log('request config====', config)
     return config
   },

@@ -4,10 +4,10 @@ interface UserType {
   avatar?: string
 }
 export type typePageSetOption = {
-  title: string
-  desc: string
-  js: string
-  css: string
+  title?: string
+  desc?: string
+  js?: string
+  css?: string
 }
 export type configState = {
   showGlobalLoading?: boolean
@@ -33,7 +33,8 @@ export type MoveCompsType = {
 
 export type componentState = {
   selectId?: string
-  componentList?: ComponentInfoType[]
+  componentList?: ComponentInfoType[],
+  copiedComponent?: ComponentInfoType | null
 }
 
 export type GlobalConfigState = {

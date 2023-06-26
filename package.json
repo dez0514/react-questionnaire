@@ -21,6 +21,7 @@
     "classnames": "^2.3.2",
     "immer": "^10.0.2",
     "immutability-helper": "^3.1.1",
+    "lodash.clonedeep": "^4.5.0",
     "nanoid": "^4.0.2",
     "normalize.css": "^8.0.1",
     "nprogress": "^0.2.0",
@@ -37,6 +38,7 @@
     "styled-components": "^6.0.0-rc.3"
   },
   "devDependencies": {
+    "@types/lodash.clonedeep": "^4.5.7",
     "@types/node": "^20.3.1",
     "@types/nprogress": "^0.2.0",
     "@types/react": "^18.0.37",

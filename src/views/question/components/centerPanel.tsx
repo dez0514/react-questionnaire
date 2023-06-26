@@ -5,9 +5,13 @@ import { getComponentConfByType } from '@/components/QuestionComponents'
 import { setSelectId, moveComponent, deleteComponent } from '@/actions'
 import styles from '../edit.module.scss'
 import classNames from "classnames"
+import { Spin } from 'antd'
 import { DeleteOutlined } from '@ant-design/icons'
 import SortableContainer from "@/components/DndKitDragSortable/SortableContainer"
 import SortableItem from "@/components/DndKitDragSortable/SortableItem"
+type PropsType = {
+  loading: boolean
+}
 function genComponent(componentInfo: ComponentInfoType) {
   const { type, props } = componentInfo // 每个组件的信息，是从 redux store 获取的（服务端获取）
   const componentConf = getComponentConfByType(type)
@@ -15,7 +19,7 @@ function genComponent(componentInfo: ComponentInfoType) {
   const { Component } = componentConf
   return <Component {...props} />
 }
-function CenterPanel() {
+function CenterPanel({ loading }: PropsType) {
   const dispatch = useDispatch()
   const { componentList, selectId } = useGetComponentInfo()
   function handleClick(event: React.MouseEvent, id: string) {
@@ -29,7 +33,8 @@ function CenterPanel() {
   function handleDelete(event: React.MouseEvent, id: string) {
     event.stopPropagation() // 阻止冒泡
     console.log('delete id===', id)
-    dispatch(deleteComponent(id))
+    dispatch(setSelectId(id))
+    dispatch(deleteComponent())
   }
   // 拖拽排序结束
   function handleDragEnd(oldIndex: number, newIndex: number) {
@@ -39,6 +44,13 @@ function CenterPanel() {
   const componentListWithId = componentList.map(c => {
     return { ...c, id: c.fe_id }
   })
+  if (loading) {
+    return (
+      <div style={{ textAlign: 'center', marginTop: '24px' }}>
+        <Spin />
+      </div>
+    )
+  }
   return (
     <SortableContainer items={componentListWithId} onDragEnd={handleDragEnd}>
       <div>

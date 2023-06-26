@@ -2,6 +2,7 @@ import {
   UPDATE_CONFIG,
   UPDATE_USERINFO,
   RESET_USERINFO,
+  INIT_COMPONENT,
   ADD_COMPONENT,
   SET_SELECT_ID,
   MOVE_COMPONENT,
@@ -9,9 +10,11 @@ import {
   CHANGE_COMPONENT_PROPS,
   CHANGE_COMPONENT_TITLE,
   CHANGE_COMPONENT_HIDDEN,
-  CHANGE_COMPONENT_LOCK
+  CHANGE_COMPONENT_LOCK,
+  COPY_SELECT_COMPONENT,
+  PASTE_COPIED_COMPONENT
 } from '@/actions/actionTypes'
-import { configState, userState, ComponentInfoType, MoveCompsType, UpdatePropsType, UpdateCompsAttrType } from '@/types/reducer'
+import { componentState, configState, userState, ComponentInfoType, MoveCompsType, UpdatePropsType, UpdateCompsAttrType } from '@/types/reducer'
 
 // Action是一个Object 或者 函数, 用于描述发生的动作
 export const updateConfig = (payload: configState) => {
@@ -35,6 +38,13 @@ export const resetUserinfo = () => {
   }
 }
 
+export const initComponent = (payload: componentState) => {
+  return {
+    type: INIT_COMPONENT,
+    payload
+  }
+}
+
 export const addComponent = (payload: ComponentInfoType) => {
   return {
     type: ADD_COMPONENT,
@@ -49,10 +59,9 @@ export const moveComponent = (payload: MoveCompsType) => {
   }
 }
 
-export const deleteComponent = (payload: string) => {
+export const deleteComponent = () => {
   return {
-    type: DELETE_COMPONENT,
-    payload
+    type: DELETE_COMPONENT
   }
 }
 
@@ -60,6 +69,18 @@ export const setSelectId = (payload: string) => {
   return {
     type: SET_SELECT_ID,
     payload
+  }
+}
+
+export const copySelectedComponent = () => {
+  return {
+    type: COPY_SELECT_COMPONENT
+  }
+}
+
+export const pasteCopiedComponent = () => {
+  return {
+    type: PASTE_COPIED_COMPONENT
   }
 }
 
